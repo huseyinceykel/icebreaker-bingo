@@ -390,6 +390,8 @@ Admin panelini sürekli açık bırakmak okumayı artırır. Daha büyük etkinl
 - [**Hüseyin Eren Çeykel**](https://www.linkedin.com/in/huseyinerenceykel/) ([@huseyinceykel](https://github.com/huseyinceykel)): proje sahibi ve geliştirici
 - [**@ArdaEnes824**](https://github.com/ArdaEnes824): geliştirme sürecinde katkı sağladı ve yardımcı oldu. Teşekkürler! 🙌
 
+Tüm katkıda bulunanlar için [GitHub katkı grafiğine](https://github.com/huseyinceykel/icebreaker-bingo/graphs/contributors) bakabilirsiniz.
+
 Katkı vermek isterseniz bir **issue** açın ya da **pull request** gönderin. Gönderiminizden önce `npm test` komutunun geçtiğinden emin olun.
 
 ---
