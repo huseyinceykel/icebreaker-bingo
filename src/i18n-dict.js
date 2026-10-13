@@ -1,7 +1,7 @@
 // Ceviriler (tr/en). Anahtarlar iki dilde de ayni olmali: test/unit.mjs kontrol eder.
 export const dict = {
   tr: {
-    appName: "Teknoloji Bingo",
+    appName: "Icebreaker Bingo",
     winnersShow: "Gösterilecek kişi sayısı",
     winMode: "Kazanma kuralı", winFull: "Tüm kartları ilk dolduran kazanır", winLine: "İlk bingo (satır/sütun/çapraz) yapan kazanır",
     colDone: "Tamamladı", cardsLeft: "{n} kart kaldı", completedShort: "Hepsi tamam! 🏆",
@@ -106,7 +106,7 @@ export const dict = {
     delConfirmUsed: "Bu karte {n} kişi doldurmuş. Yine de silinsin mi?",
   },
   en: {
-    appName: "Tech Bingo",
+    appName: "Icebreaker Bingo",
     winnersShow: "Number of people shown",
     winMode: "Winning rule", winFull: "First to fill every square wins", winLine: "First bingo (row/column/diagonal) wins",
     colDone: "Completed", cardsLeft: "{n} squares left", completedShort: "All done! 🏆",

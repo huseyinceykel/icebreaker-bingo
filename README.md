@@ -1,4 +1,4 @@
-# 🎯 Teknoloji Bingo
+# 🎯 Icebreaker Bingo
 
 Etkinliklerde katılımcıların birbiriyle tanışmasını sağlayan, Firebase tabanlı bir bingo oyunu.
 
@@ -413,3 +413,13 @@ npm run deploy                       # builds rules from the template, builds th
 5. If you use a custom domain, add it to **Authentication → Settings → Authorized domains**.
 
 **How it works:** every user gets a unique 6-character code; filling a square requires another person's code. All checks (code exists, not your own, per-person usage limit, game open/closed, time window) run in Firestore security rules, so they cannot be bypassed from the browser. Cloud Functions are not needed, so it fits Firebase's free Spark plan.
+
+---
+
+## 💬 Soru ve sorunlar / Questions & issues
+
+Bir hata bulduysanız ya da öneriniz varsa GitHub'da **issue** açabilirsiniz. Sorularınız ve geri bildirimleriniz için LinkedIn'den ulaşabilirsiniz:
+
+**[LinkedIn](https://www.linkedin.com/in/huseyinerenceykel/)**
+
+*Found a bug or have a suggestion? Open an **issue** on GitHub. For questions and feedback you can reach out on [LinkedIn](https://www.linkedin.com/in/huseyinerenceykel/).*
