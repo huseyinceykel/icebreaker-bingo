@@ -1,5 +1,8 @@
 {
   "name": "icebreaker-bingo",
+  "description": "Etkinlikler icin Firebase tabanli, Google girisli tanisma bingosu",
+  "license": "MIT",
+  "author": "Hüseyin Eren Çeykel",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -26,7 +29,6 @@
     "@vitejs/plugin-react": "^6.1.2",
     "vite": "^8.3.4"
   },
-  "description": "Etkinlikler icin Firebase tabanli, Google girisli tanisma bingosu",
   "overrides": {
     "@grpc/grpc-js": "^1.14.6"
   }

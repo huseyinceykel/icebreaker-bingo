@@ -387,7 +387,7 @@ Admin panelini sürekli açık bırakmak okumayı artırır. Daha büyük etkinl
 
 ## 🤝 Katkıda bulunanlar
 
-<!-- Kendi GitHub kullanıcı adınızı ve rolünüzü bu listenin başına ekleyin. -->
+- [**Hüseyin Eren Çeykel**](https://www.linkedin.com/in/huseyinerenceykel/) ([@huseyinceykel](https://github.com/huseyinceykel)): proje sahibi ve geliştirici
 - [**@ArdaEnes824**](https://github.com/ArdaEnes824): geliştirme sürecinde katkı sağladı ve yardımcı oldu. Teşekkürler! 🙌
 
 Katkı vermek isterseniz bir **issue** açın ya da **pull request** gönderin. Gönderiminizden önce `npm test` komutunun geçtiğinden emin olun.
@@ -416,10 +416,18 @@ npm run deploy                       # builds rules from the template, builds th
 
 ---
 
+## 📄 Lisans / License
+
+Bu proje [MIT Lisansı](LICENSE) ile paylaşılmıştır: ücretsiz kullanabilir, değiştirebilir ve dağıtabilirsiniz.
+
+*This project is released under the [MIT License](LICENSE): you are free to use, modify and distribute it.*
+
+---
+
 ## 💬 Soru ve sorunlar / Questions & issues
 
 Bir hata bulduysanız ya da öneriniz varsa GitHub'da **issue** açabilirsiniz. Sorularınız ve geri bildirimleriniz için LinkedIn'den ulaşabilirsiniz:
 
-**[LinkedIn](https://www.linkedin.com/in/huseyinerenceykel/)**
+**[Hüseyin Eren Çeykel · LinkedIn](https://www.linkedin.com/in/huseyinerenceykel/)**
 
 *Found a bug or have a suggestion? Open an **issue** on GitHub. For questions and feedback you can reach out on [LinkedIn](https://www.linkedin.com/in/huseyinerenceykel/).*
