@@ -1,0 +1,33 @@
+{
+  "name": "teknoloji-bingo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "rules:build": "node scripts/build-rules.mjs",
+    "deploy": "node scripts/build-rules.mjs && vite build && firebase deploy",
+    "test:unit": "node test/unit.mjs",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-bingo-sec \"node test/security.mjs\" && firebase emulators:exec --only firestore --project demo-bingo \"node test/rules.mjs\"",
+    "test:load": "firebase emulators:exec --only firestore --project demo-bingo-load \"node test/load.mjs\"",
+    "test": "npm run test:unit && npm run test:rules",
+    "emulators": "ADMIN_EMAIL=admin@example.com node scripts/build-rules.mjs && firebase emulators:start --only auth,firestore --project demo-bingo-e2e",
+    "dev:emulator": "vite --mode emulator"
+  },
+  "dependencies": {
+    "firebase": "^13.0.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.4"
+  },
+  "description": "Etkinlikler icin Firebase tabanli, Google girisli tanisma bingosu",
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.6"
+  }
+}

@@ -1,0 +1,131 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function settingsExist() { return exists(/databases/$(db)/documents/config/settings); }
+    function settings() { return get(/databases/$(db)/documents/config/settings).data; }
+    function maxPerPerson() { return settingsExist() ? settings().get('maxPerPerson', 4) : 4; }
+    // Elle ac/kapa + opsiyonel baslangic/bitis (epoch ms, 0 = yok)
+    function gameOpen() {
+      return !settingsExist() || (
+        settings().get('gameOpen', true)
+        && (settings().get('openAt', 0) == 0 || request.time.toMillis() >= settings().get('openAt', 0))
+        && (settings().get('closeAt', 0) == 0 || request.time.toMillis() < settings().get('closeAt', 0)));
+    }
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email == '__ADMIN_EMAIL__'
+        && request.auth.token.email_verified == true;
+    }
+
+    // Kod -> kisi eslesmesi. Sadece tek tek sorgulanabilir (liste yok), tahmin edilemez.
+    match /codes/{code} {
+      allow get: if signedIn();
+      allow list: if isAdmin();
+      allow create: if signedIn()
+        && code.matches('^[A-Z2-9]{6}$')
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'photoURL'])
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(/databases/$(db)/documents/users/$(request.auth.uid)).data.code == code;
+      allow delete: if isAdmin();
+    }
+
+    // Kullanici dokumani (kisisel kod burada, sadece sahibi ve admin gorur).
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['code', 'name', 'email', 'photoURL', 'createdAt'])
+        && request.resource.data.createdAt == request.time
+        && existsAfter(/databases/$(db)/documents/codes/$(request.resource.data.code))
+        && getAfter(/databases/$(db)/documents/codes/$(request.resource.data.code)).data.uid == uid;
+      allow update: if false;
+      allow delete: if isAdmin();
+
+      // Doldurulan kareler. Bir kare bir kez, create-only.
+      match /claims/{squareId} {
+        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+        allow create: if signedIn() && request.auth.uid == uid
+          && gameOpen()
+          && exists(/databases/$(db)/documents/squares/$(squareId))
+          && request.resource.data.keys().hasOnly(['code', 'targetUid', 'targetName', 'createdAt'])
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.targetUid != uid
+          && get(/databases/$(db)/documents/codes/$(request.resource.data.code)).data.uid == request.resource.data.targetUid
+          && existsAfter(/databases/$(db)/documents/users/$(uid)/met/$(request.resource.data.targetUid))
+          && getAfter(/databases/$(db)/documents/users/$(uid)/met/$(request.resource.data.targetUid)).data.lastSquareId == squareId;
+        allow delete: if isAdmin();
+        allow update: if false;
+      }
+
+      // Tanisilan kisiler: count = bu kisinin kodu kac karede kullanildi (en fazla ayarlardaki limit).
+      match /met/{targetUid} {
+        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+        allow create: if signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['count', 'lastSquareId'])
+          && request.resource.data.count == 1
+          && gameOpen()
+          && maxPerPerson() >= 1
+          && existsAfter(/databases/$(db)/documents/users/$(uid)/claims/$(request.resource.data.lastSquareId))
+          && getAfter(/databases/$(db)/documents/users/$(uid)/claims/$(request.resource.data.lastSquareId)).data.targetUid == targetUid;
+        allow update: if signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['count', 'lastSquareId'])
+          && request.resource.data.count == resource.data.count + 1
+          && gameOpen()
+          && request.resource.data.count <= maxPerPerson()
+          && existsAfter(/databases/$(db)/documents/users/$(uid)/claims/$(request.resource.data.lastSquareId))
+          && getAfter(/databases/$(db)/documents/users/$(uid)/claims/$(request.resource.data.lastSquareId)).data.targetUid == targetUid;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Admin tum claimleri listeleyebilsin (skor tablosu).
+    match /{path=**}/claims/{id} {
+      allow read: if isAdmin();
+    }
+
+    // Etkinlik ayarlari: ad, renk, kisi basi kullanim limiti, oyun acik/kapali
+    match /config/settings {
+      allow read: if true; // giris ekraninda etkinlik adi gorunsun; hassas veri yok
+      allow delete: if isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['maxPerPerson', 'eventName', 'eventInfo', 'footer', 'accent', 'gameOpen', 'openAt', 'closeAt', 'winMode', 'winnersCount'])
+        && request.resource.data.maxPerPerson is int
+        && request.resource.data.maxPerPerson >= 1 && request.resource.data.maxPerPerson <= 25
+        && request.resource.data.eventName is string && request.resource.data.eventName.size() <= 60
+        && request.resource.data.get('eventInfo', '') is string && request.resource.data.get('eventInfo', '').size() <= 100
+        && request.resource.data.get('footer', '') is string && request.resource.data.get('footer', '').size() <= 120
+        && request.resource.data.accent is string && request.resource.data.accent.matches('^#[0-9a-fA-F]{6}$')
+        && request.resource.data.gameOpen is bool
+        && request.resource.data.get('openAt', 0) is int && request.resource.data.get('openAt', 0) >= 0
+        && request.resource.data.get('closeAt', 0) is int && request.resource.data.get('closeAt', 0) >= 0
+        && request.resource.data.get('winMode', 'full') in ['full', 'line']
+        && request.resource.data.get('winnersCount', 10) is int
+        && request.resource.data.get('winnersCount', 10) >= 1 && request.resource.data.get('winnersCount', 10) <= 100;
+    }
+
+    // Yonetici incelemesi: supheli kullanicilari onaylama / diskalifiye (sadece admin)
+    match /reviews/{uid} {
+      allow read, delete: if isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.status in ['cleared', 'disqualified']
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    // Bingo kareleri
+    match /squares/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Basarisiz deneme kayitlari (sahtekarlik tespiti icin)
+    match /attempts/{id} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'code', 'squareId', 'reason', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+  }
+}

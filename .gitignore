@@ -1,0 +1,24 @@
+# bagimliliklar ve derleme ciktisi
+node_modules
+dist
+
+# gizli / kisiye ozel yapilandirma (ornekleri .example dosyalarinda)
+.env
+.env.local
+.env.*.local
+.firebaserc
+.firebase
+
+# firestore.rules, firestore.rules.template'ten uretilir (admin e-postasi icerir)
+firestore.rules
+
+# emulator ve arac gunlukleri
+*.log
+firebase-debug.log*
+firestore-debug.log
+ui-debug.log
+
+# isletim sistemi / editor
+.DS_Store
+.vscode
+.idea
